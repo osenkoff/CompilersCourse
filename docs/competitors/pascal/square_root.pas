@@ -10,8 +10,8 @@ begin
   if (number < 0) then
     WriteLn('ERROR')
   else
-  begin
-    result_num := Sqrt(number);
-    WriteLn('Квадратный корень = ', result_num);
-  end;
+    begin
+      result_num := Sqrt(number);
+      WriteLn('Квадратный корень = ', result_num);
+    end;
 end.

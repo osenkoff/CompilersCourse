@@ -3,6 +3,7 @@ var
   line: string;
   i, length_line: integer;
   reversed_line: string;
+  
 begin
   Write('Введите строку: ');
   ReadLn(line);
