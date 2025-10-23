@@ -122,7 +122,7 @@ public class FileUtilTests
     }
 
     [Fact]
-    public void LineNumbersStartFromOne()
+    public void CanFormatAllLines()
     {
         const string original = """
                                 Первая
@@ -143,7 +143,7 @@ public class FileUtilTests
     }
 
     [Fact]
-    public void FormatIsCorrectWithDotAndSpace()
+    public void CanThrowCorrectFormatWithDotAndSpace()
     {
         const string original = "Тестовая строка";
         const string expected = "1. Тестовая строка";
@@ -158,7 +158,7 @@ public class FileUtilTests
     }
 
     [Fact]
-    public void PreservesSpecialCharactersAndPunctuation()
+    public void CanFormatAllLinesWithCharactersAndPunctuation()
     {
         const string original = """
                                 Строка с спецсимволами: !@#$%^&*()
