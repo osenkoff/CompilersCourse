@@ -156,17 +156,17 @@ public static class TextUtil
         };
 
         int total = 0;
-        int prevValue = 0;
+        int previousValue = 0;
 
         for (int i = text.Length - 1; i >= 0; i--)
         {
-            char c = text[i];
-            if (!romanValues.TryGetValue(c, out int currentValue))
+            char symbol = text[i];
+            if (!romanValues.TryGetValue(symbol, out int currentValue))
             {
-                throw new ArgumentException($"Недопустимый символ '{c}' в римском числе.", nameof(text));
+                throw new ArgumentException($"Недопустимый символ '{symbol}' в римском числе.", nameof(text));
             }
 
-            if (currentValue < prevValue)
+            if (currentValue < previousValue)
             {
                 total -= currentValue;
             }
@@ -175,7 +175,7 @@ public static class TextUtil
                 total += currentValue;
             }
 
-            prevValue = currentValue;
+            previousValue = currentValue;
         }
 
         if (total <= 0 || total > 3000)
@@ -183,8 +183,8 @@ public static class TextUtil
             throw new ArgumentException("Римское число должно соответствовать целому числу в диапазоне от 1 до 3000.", nameof(text));
         }
 
-        string canonical = ToRoman(total);
-        if (!string.Equals(text, canonical, StringComparison.Ordinal))
+        string canonicalNumber = ToRoman(total);
+        if (!string.Equals(text, canonicalNumber, StringComparison.Ordinal))
         {
             throw new ArgumentException("Некорректная запись римского числа.", nameof(text));
         }
@@ -196,13 +196,13 @@ public static class TextUtil
     {
         StringBuilder result = new StringBuilder();
         int[] values = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
-        string[] numerals = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+        string[] romanNumerals = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
 
         for (int i = 0; i < values.Length; i++)
         {
             while (number >= values[i])
             {
-                result.Append(numerals[i]);
+                result.Append(romanNumerals[i]);
                 number -= values[i];
             }
         }
