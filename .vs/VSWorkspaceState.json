@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\ExampleLib",
+    "\\tests",
+    "\\tests\\ExampleLib.UnitTests",
+    "\\tests\\ExampleLib.UnitTests\\Helpers"
+  ],
+  "SelectedNode": "\\src\\ExampleLib\\FileUtil.cs",
+  "PreviewInSolutionExplorer": false
+}
