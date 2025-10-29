@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ExampleLib;
@@ -79,6 +81,7 @@ public static class TextUtil
                     }
                     else
                     {
+                        PushCurrentWord();
                         state = WordState.NoWord;
                     }
 
@@ -94,6 +97,7 @@ public static class TextUtil
                     {
                         // Убираем дефис, которого не должно быть в конце слова.
                         currentWord.Remove(currentWord.Length - 1, 1);
+                        PushCurrentWord();
                         state = WordState.NoWord;
                     }
 
@@ -107,6 +111,7 @@ public static class TextUtil
                     }
                     else
                     {
+                        PushCurrentWord();
                         state = WordState.NoWord;
                     }
 
@@ -126,5 +131,82 @@ public static class TextUtil
                 currentWord.Clear();
             }
         }
+    }
+
+    /// <summary>
+    /// Парсит строку, содержащую римское число, и возвращает соответствующее целое число.
+    /// Поддерживает числа от 1 до 3000. Ноль не представляется в классической римской системе.
+    /// </summary>
+    public static int ParseRoman(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            throw new ArgumentException("Римское число не может быть пустым.", nameof(text));
+        }
+
+        Dictionary<char, int> romanValues = new Dictionary<char, int>(7)
+        {
+            { 'I', 1 },
+            { 'V', 5 },
+            { 'X', 10 },
+            { 'L', 50 },
+            { 'C', 100 },
+            { 'D', 500 },
+            { 'M', 1000 },
+        };
+
+        int total = 0;
+        int previousValue = 0;
+
+        for (int i = text.Length - 1; i >= 0; i--)
+        {
+            char symbol = text[i];
+            if (!romanValues.TryGetValue(symbol, out int currentValue))
+            {
+                throw new ArgumentException($"Недопустимый символ '{symbol}' в римском числе.", nameof(text));
+            }
+
+            if (currentValue < previousValue)
+            {
+                total -= currentValue;
+            }
+            else
+            {
+                total += currentValue;
+            }
+
+            previousValue = currentValue;
+        }
+
+        if (total <= 0 || total > 3000)
+        {
+            throw new ArgumentException("Римское число должно соответствовать целому числу в диапазоне от 1 до 3000.", nameof(text));
+        }
+
+        string canonicalNumber = ToRoman(total);
+        if (!string.Equals(text, canonicalNumber, StringComparison.Ordinal))
+        {
+            throw new ArgumentException("Некорректная запись римского числа.", nameof(text));
+        }
+
+        return total;
+    }
+
+    private static string ToRoman(int number)
+    {
+        StringBuilder result = new StringBuilder();
+        int[] values = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+        string[] romanNumerals = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+
+        for (int i = 0; i < values.Length; i++)
+        {
+            while (number >= values[i])
+            {
+                result.Append(romanNumerals[i]);
+                number -= values[i];
+            }
+        }
+
+        return result.ToString();
     }
 }
