@@ -187,7 +187,7 @@ if_statement = "ЕСЛИ", "(", expression, ")", block, [ "ИЛИ_НЕТ", block
 while_statement = "ОРБИТА", "(", expression, ")", block ;
 
 for_statement = "СПЕКТР", "(", [ for_init ], ";", [ expression ], ";", [ for_update ], ")", block ;
-for_init = variable_declaration | assignment | expression | ";" ;
+for_init = variable_declaration | assignment | expression | ";"s ;
 for_update = assignment | function_call | expression | ";" ;
 
 return_statement = "ВЕРНУТЬ", [ expression ], ";" ;
