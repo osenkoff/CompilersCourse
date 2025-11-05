@@ -10,6 +10,7 @@
 - Идентификаторы переменных
 - Скобки для группировки выражений
 - Константы
+- Цепочки пристваивания (например: x = y = 5)
 
 ## Операторы
 
@@ -83,52 +84,11 @@
 
 ## Грамматика в нотации EBNF
 
-**Основная конструкция программы**
-```
-program = "ЗВЕЗДА", { statement }, "ЗАКРЫТАЯ ЗВЕЗДА" ;
-
-statement = variable_declaration | assignment | function_call | if_statement | while_statement | for_statement | return_statement ;
-```
-
-**Объявления**
-```
-variable_declaration = "СВЕТ", identifier, ":", type, [ "=", expression ], ";" ;
-
-constant_declaration = "КОНСТЕЛЛАЦИЯ", identifier, ":", type, "=", expression, ";" ;
-
-function_declaration = "ФОТОН", identifier, "(", [ parameter_list ], ")", [ ":", type ], "{", { statement }, "}" ;
-
-parameter_list = parameter, { ",", parameter } ;
-
-parameter = identifier, ":", type ;
-```
-
-**Инструкции**
-```
-assignment = identifier, ( "=" | "+=" | "-=" | "*=" | "/=" | "**=" ), expression, ";" ;
-
-function_call = ( "ИЗЛУЧАТЬ" | "ПРИЕМ_СИГНАЛА" | identifier ), "(", [ argument_list ], ")", ";" ;
-
-argument_list = expression, { ",", expression } ;
-
-if_statement = "ЕСЛИ", "(", expression, ")", "{", { statement }, "}", [ "ИЛИ_НЕТ", "{", { statement }, "}" ] ;
-
-while_statement = "ОРБИТА", "(", expression, ")", "{", { statement }, "}" ;
-
-for_statement = "СПЕКТР", "(", [ for_init ], ";", [ expression ], ";", [ for_update ], ")", "{", { statement }, "}" ;
-
-for_init = variable_declaration | assignment | expression ;
-
-for_update = assignment | function_call | expression ;
-
-return_statement = "ВЕРНУТЬ", [ expression ], ";" ;
-
-type = "квазар" | "нова" | "луч" | "вакуум" | "галактика" ;
-```
-
 **Грамматика выражений**
 ```
-expression = logical_or ;
+expression = assignment_expr ;
+
+assignment_expr = logical_or, [ assignment_op, assignment_expr ] ;  (* Цепочки присваивания, правая ассоциативность *)
 
 logical_or = logical_and, { "||", logical_and } ;
 
@@ -146,11 +106,15 @@ power = primary, [ "**", power ] ;
 
 unary = [ "+" | "-" | "!" ], power ;
 
-primary = literal | identifier | function_call_expression | "(", expression, ")" | array_literal ;
+primary = literal | identifier | function_call_expression | "(", expression, ")" | "(", expression, ")" ;
 
 function_call_expression = ( "ИЗЛУЧАТЬ" | "ПРИЕМ_СИГНАЛА" | identifier ), "(", [ argument_list ], ")" ;
 
-array_literal = "[", [ expression, { ",", expression } ], "]" ;
+assignment_op = "=" | "+=" | "-=" | "*=" | "/=" | "**=" ;
+
+argument_list = expression, { ",", expression } ;
+
+literal = number | string | boolean ;  (* Константы как литералы *)
 ```
 
 **Лексическая грамматика**
