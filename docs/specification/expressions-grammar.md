@@ -4,14 +4,12 @@
 
 Выражения в StarLight могут содержать :
 - Числовые литералы (целые и с плавающей точкой)
-- Строковые литералы
 - Логические литералы (ИСТИНА, ЛОЖЬ)
 - Унарные и бинарные опреторы
 - Вызов встроенных функций
 - Идентификаторы переменных
 - Скобки для группировки выражений
 - Константы
-  
 
 ## Операторы
 
@@ -69,11 +67,11 @@
   
 **Встроенные тригонометрические функции**
 
-- sin(x) - синус угла
+- `sin(x)` - синус угла
 
-- cos(x) - косинус угла
+- `cos(x)` - косинус угла
 
-- tan(x) - тангенс угла
+- `tan(x)` - тангенс угла
 
 **Встроенные функции округления**
   
@@ -84,62 +82,6 @@
 - `floor(x)` - возвращает ближайшее целое, меньшее или равное переданному
 
 ## Грамматика в нотации EBNF
-
-**Базовые символы**
-
-```
-digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
-
-letter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
-       | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t"
-       | "u" | "v" | "w" | "x" | "y" | "z"
-       | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
-       | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
-       | "U" | "V" | "W" | "X" | "Y" | "Z"
-       | "а" | "б" | "в" | "г" | "д" | "е" | "ё" | "ж" | "з" | "и"
-       | "й" | "к" | "л" | "м" | "н" | "о" | "п" | "р" | "с" | "т"
-       | "у" | "ф" | "х" | "ц" | "ч" | "ш" | "щ" | "ъ" | "ы" | "ь"
-       | "э" | "ю" | "я"
-       | "А" | "Б" | "В" | "Г" | "Д" | "Е" | "Ё" | "Ж" | "З" | "И"
-       | "Й" | "К" | "Л" | "М" | "Н" | "О" | "П" | "Р" | "С" | "Т"
-       | "У" | "Ф" | "Х" | "Ц" | "Ч" | "Ш" | "Щ" | "Ъ" | "Ы" | "Ь"
-       | "Э" | "Ю" | "Я" ;
-```
-
-**Литералы и базовые эелементы**
-```
-literal = number | string | boolean;
-
-number = integer | real;
-
-integer = digit, { digit };
-
-real = digit, { digit }, ".", digit, { digit }, [ ("е" | "E"), ["+" | "-"], digit, { digit } ];
-
-string = "'", { character - "'" | escape_sequence }, "'" 
-       | "\"\"\"", { any_character - "\"\"\"" | escape_sequence }, "\"\"\"" ;
-
-boolean = "ИСТИНА" | "ЛОЖЬ" ;
-
-escape_sequence = 
-  "\\", ( "'" | "\"" | "\\" | "n" | "t" | "u", "{", hex_digit, hex_digit, hex_digit, hex_digit, "}" ) ;
-
-hex_digit = 
-  digit | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f" 
-
-any_character = ? любой символ Unicode ? ;
-
-```
-
-**Типы данных**
-```
-type = "квазар" | "нова" | "луч" | "вакуум" | "галактика" ;
-```
-
-**Идентификаторы**
-```
-identifier = (letter | "_"), { letter | digit | "_" };
-```
 
 **Основная конструкция программы**
 ```
@@ -180,9 +122,11 @@ for_init = variable_declaration | assignment | expression ;
 for_update = assignment | function_call | expression ;
 
 return_statement = "ВЕРНУТЬ", [ expression ], ";" ;
+
+type = "квазар" | "нова" | "луч" | "вакуум" | "галактика" ;
 ```
 
-**Выражения**
+**Грамматика выражений**
 ```
 expression = logical_or ;
 
@@ -198,11 +142,60 @@ additive = multiplicative, { ( "+" | "-" ), multiplicative } ;
 
 multiplicative = power, { ( "*" | "/" | "%" ), power } ;
 
-power = unary, [ "**", power ] ;
+power = primary, [ "**", power ] ;
 
-unary = [ "+" | "-" | "!" ], primary ;
+unary = [ "+" | "-" | "!" ], power ;
 
-primary = literal | identifier | function_call | "(", expression, ")" | array_literal ;
+primary = literal | identifier | function_call_expression | "(", expression, ")" | array_literal ;
+
+function_call_expression = ( "ИЗЛУЧАТЬ" | "ПРИЕМ_СИГНАЛА" | identifier ), "(", [ argument_list ], ")" ;
 
 array_literal = "[", [ expression, { ",", expression } ], "]" ;
+```
+
+**Лексическая грамматика**
+
+```
+Базовые символы:
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+
+letter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
+       | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t"
+       | "u" | "v" | "w" | "x" | "y" | "z"
+       | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
+       | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
+       | "U" | "V" | "W" | "X" | "Y" | "Z"
+       | "а" | "б" | "в" | "г" | "д" | "е" | "ё" | "ж" | "з" | "и"
+       | "й" | "к" | "л" | "м" | "н" | "о" | "п" | "р" | "с" | "т"
+       | "у" | "ф" | "х" | "ц" | "ч" | "ш" | "щ" | "ъ" | "ы" | "ь"
+       | "э" | "ю" | "я"
+       | "А" | "Б" | "В" | "Г" | "Д" | "Е" | "Ё" | "Ж" | "З" | "И"
+       | "Й" | "К" | "Л" | "М" | "Н" | "О" | "П" | "Р" | "С" | "Т"
+       | "У" | "Ф" | "Х" | "Ц" | "Ч" | "Ш" | "Щ" | "Ъ" | "Ы" | "Ь"
+       | "Э" | "Ю" | "Я" ;
+
+Литералы:
+literal = number | string | boolean ;
+
+number = integer | real ;
+
+integer = digit, { digit } ;
+
+real = digit, { digit }, ".", digit, { digit }, [ ("е" | "E"), ["+" | "-"], digit, { digit } ] ;
+
+string = "'", { character - "'" | escape_sequence }, "'" 
+       | "\"\"\"", { any_character - "\"\"\"" | escape_sequence }, "\"\"\"" ;
+
+boolean = "ИСТИНА" | "ЛОЖЬ" ;
+
+escape_sequence = 
+  "\\", ( "'" | "\"" | "\\" | "n" | "t" | "u", "{", hex_digit, hex_digit, hex_digit, hex_digit, "}" ) ;
+
+hex_digit = 
+  digit | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f" ;
+
+any_character = ? любой символ Unicode ? ;
+
+Идентификаторы:
+identifier = (letter | "_"), { letter | digit | "_" } ;
 ```
