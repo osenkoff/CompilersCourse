@@ -108,7 +108,7 @@ power = primary, [ "**", power ] ;
 
 unary = [ "+" | "-" | "!" ], power ;
 
-primary = literal | identifier | function_call_expression | "(", expression, ")" | "(", expression, ")" ;
+primary = literal | identifier | function_call_expression | "(", expression, ")" ;
 
 function_call_expression = ( "ИЗЛУЧАТЬ" | "ПРИЕМ_СИГНАЛА" | identifier ), "(", [ argument_list ], ")" ;
 
