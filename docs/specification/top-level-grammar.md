@@ -192,7 +192,7 @@ for_update = assignment | function_call | expression | ";" ;
 
 return_statement = "ВЕРНУТЬ", [ expression ], ";" ;
 
-type = "квазар" | "нова" | "луч" | "вакуум" | "галактика" ;
+type = "квазар" | "нова" | "вакуум" | "галактика" ;
 
 (* Выражения: см. docs/specification/expressions-grammar.md *)
 (* expression = [определение из expressions-grammar.md] *)
