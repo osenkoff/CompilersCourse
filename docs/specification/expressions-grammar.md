@@ -114,7 +114,7 @@ assignment_op = "=" | "+=" | "-=" | "*=" | "/=" | "**=" ;
 
 argument_list = expression, { ",", expression } ;
 
-literal = number | string | boolean ;  (* Константы как литералы *)
+literal = number | boolean ;  (* Константы как литералы *)
 ```
 
 **Лексическая грамматика**
@@ -139,7 +139,7 @@ letter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
        | "Э" | "Ю" | "Я" ;
 
 Литералы:
-literal = number | string | boolean ;
+literal = number | boolean ;
 
 number = integer | real ;
 
@@ -147,18 +147,7 @@ integer = digit, { digit } ;
 
 real = digit, { digit }, ".", digit, { digit }, [ ("е" | "E"), ["+" | "-"], digit, { digit } ] ;
 
-string = "'", { character - "'" | escape_sequence }, "'" 
-       | "\"\"\"", { any_character - "\"\"\"" | escape_sequence }, "\"\"\"" ;
-
 boolean = "ИСТИНА" | "ЛОЖЬ" ;
-
-escape_sequence = 
-  "\\", ( "'" | "\"" | "\\" | "n" | "t" | "u", "{", hex_digit, hex_digit, hex_digit, hex_digit, "}" ) ;
-
-hex_digit = 
-  digit | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f" ;
-
-any_character = ? любой символ Unicode ? ;
 
 Идентификаторы:
 identifier = (letter | "_"), { letter | digit | "_" } ;
