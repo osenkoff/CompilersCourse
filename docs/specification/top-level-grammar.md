@@ -221,9 +221,9 @@ statement = variable_declaration
             | while_statement 
             | for_statement 
             | function_declaration
-            | return_statement ;
-            | break_statement //добавлено
-            | continue_statement ; //добавлено
+            | return_statement
+            | break_statement
+            | continue_statement ;
 ```
 
 **Объявления**
@@ -252,7 +252,6 @@ function_call = ( "ИЗЛУЧАТЬ" | "ПРИЕМ_СИГНАЛА" | identifier 
 
 argument_list = expression, { ",", expression } ;
 
-//изменено
 if_statement = "ЕСЛИ", "(", expression, ")", block,
 { "ИЛИ_НЕТ", "ЕСЛИ", "(", expression, ")", block },
 [ "ИЛИ_НЕТ", block ] ;
@@ -265,7 +264,6 @@ for_update = assignment | function_call | expression | ";" ;
 
 return_statement = "ВЕРНУТЬ", [ expression ], ";" ;
 
-//добавлено
 break_statement = "ПРЕРВАТЬ", ";" ;
 
 continue_statement = "ПРОДОЛЖИТЬ", ";" ;
