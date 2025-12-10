@@ -613,4 +613,373 @@ public class ParserTests
         Exception exception = Record.Exception(() => parser.ParseExpression());
         Assert.Null(exception);
     }
+
+    // Тесты для объявлений переменных и констант
+    [Fact]
+    public void Can_parse_variable_declaration_without_initialization()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ x : квазар; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_variable_declaration_with_initialization()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ x : квазар = 5; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_variable_declaration_nova_type()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ y : нова = 3.14; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_variable_declaration_vakuum_type()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ флаг : вакуум = ИСТИНА; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_variable_declaration_with_expression()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ сумма : квазар = 2 + 3; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_constant_declaration()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА КОНСТЕЛЛАЦИЯ e : нова = 2.718; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_constant_declaration_kvazar_type()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА КОНСТЕЛЛАЦИЯ pi : квазар = 3; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Throws_on_constant_without_initialization()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА КОНСТЕЛЛАЦИЯ x : квазар; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Throws_on_variable_declaration_without_semicolon()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ x : квазар ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    // Тесты для инструкций ввода-вывода
+    [Fact]
+    public void Can_parse_print_statement_with_one_argument()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА ИЗЛУЧАТЬ(42); ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_print_statement_with_multiple_arguments()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА ИЗЛУЧАТЬ(42, 3.14); ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_print_statement_with_expression()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА ИЗЛУЧАТЬ(x + y); ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_print_statement_without_arguments()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА ИЗЛУЧАТЬ(); ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_input_statement()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА ПРИЕМ_СИГНАЛА(x); ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Throws_on_print_statement_without_semicolon()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА ИЗЛУЧАТЬ(42) ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Throws_on_input_statement_without_semicolon()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА ПРИЕМ_СИГНАЛА(x) ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    // Тесты для присваиваний как инструкций
+    [Fact]
+    public void Can_parse_assignment_statement()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА x = 5; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_plus_assignment_statement()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА x += 3; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_minus_assignment_statement()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА x -= 2; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_multiply_assignment_statement()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА x *= 4; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_divide_assignment_statement()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА x /= 2; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_power_assignment_statement()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА x **= 2; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_assignment_with_expression()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА x = a + b * c; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Throws_on_assignment_without_semicolon()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА x = 5 ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    // Тесты для структуры программы
+    [Fact]
+    public void Can_parse_empty_program()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_program_with_one_statement()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ x : квазар = 5; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_program_with_multiple_statements()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ x : квазар = 5; СВЕТ y : квазар = 10; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_program_with_declarations_and_assignments()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ x : квазар = 5; x = 10; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Can_parse_program_with_input_output()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ x : квазар; ПРИЕМ_СИГНАЛА(x); ИЗЛУЧАТЬ(x); ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Exception exception = Record.Exception(() => parser.ParseProgram());
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void Throws_on_program_without_zvezda()
+    {
+        // Arrange
+        string code = "СВЕТ x : квазар = 5; ЗАКРЫТАЯ_ЗВЕЗДА";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Throws_on_program_without_zakrytaya_zvezda()
+    {
+        // Arrange
+        string code = "ЗВЕЗДА СВЕТ x : квазар = 5;";
+        Parser parser = new Parser(code);
+
+        // Act & Assert
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
 }

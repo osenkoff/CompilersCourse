@@ -11,9 +11,150 @@ public class Parser
         _tokens = new TokenStream(code);
     }
 
+    public void ParseProgram()
+    {
+        Match(TokenType.ZVEZDA);
+
+        while (_tokens.Peek().Type != TokenType.ZAKRYTAYA_ZVEZDA &&
+               _tokens.Peek().Type != TokenType.END_OF_FILE)
+        {
+            ParseStatement();
+        }
+
+        Match(TokenType.ZAKRYTAYA_ZVEZDA);
+    }
+
     public void ParseExpression()
     {
         ParseAssignmentExpression();
+    }
+
+    private void ParseStatement()
+    {
+        Token token = _tokens.Peek();
+
+        switch (token.Type)
+        {
+            case TokenType.SVET:
+                ParseVariableDeclaration();
+                break;
+            case TokenType.KONSTELLATSIYA:
+                ParseConstantDeclaration();
+                break;
+            case TokenType.IZLUCHAT:
+                ParsePrintStatement();
+                break;
+            case TokenType.PRIEM_SIGNALA:
+                ParseInputStatement();
+                break;
+            case TokenType.IDENTIFIER:
+                // Может быть присваивание или вызов функции
+                ParseIdentifierStatement();
+                break;
+            default:
+                throw new UnexpectedLexemeException(TokenType.SVET, token);
+        }
+    }
+
+    private void ParseVariableDeclaration()
+    {
+        Match(TokenType.SVET);
+        Match(TokenType.IDENTIFIER);
+        Match(TokenType.COLON);
+        ParseType();
+
+        if (_tokens.Peek().Type == TokenType.ASSIGN)
+        {
+            _tokens.Advance();
+            ParseExpression();
+        }
+
+        Match(TokenType.SEMICOLON);
+    }
+
+    private void ParseConstantDeclaration()
+    {
+        Match(TokenType.KONSTELLATSIYA);
+        Match(TokenType.IDENTIFIER);
+        Match(TokenType.COLON);
+        ParseType();
+        Match(TokenType.ASSIGN);
+        ParseExpression();
+        Match(TokenType.SEMICOLON);
+    }
+
+    private void ParseType()
+    {
+        Token token = _tokens.Peek();
+        if (token.Type == TokenType.KVAZAR ||
+            token.Type == TokenType.NOVA ||
+            token.Type == TokenType.VAKUUM ||
+            token.Type == TokenType.GALAKTIKA)
+        {
+            _tokens.Advance();
+        }
+        else
+        {
+            throw new UnexpectedLexemeException(TokenType.KVAZAR, token);
+        }
+    }
+
+    private void ParsePrintStatement()
+    {
+        Match(TokenType.IZLUCHAT);
+        Match(TokenType.OPEN_PARENTHESIS);
+
+        if (_tokens.Peek().Type != TokenType.CLOSE_PARENTHESIS)
+        {
+            ParseExpression();
+
+            while (_tokens.Peek().Type == TokenType.COMMA)
+            {
+                _tokens.Advance();
+                ParseExpression();
+            }
+        }
+
+        Match(TokenType.CLOSE_PARENTHESIS);
+        Match(TokenType.SEMICOLON);
+    }
+
+    private void ParseInputStatement()
+    {
+        Match(TokenType.PRIEM_SIGNALA);
+        Match(TokenType.OPEN_PARENTHESIS);
+        Match(TokenType.IDENTIFIER);
+        Match(TokenType.CLOSE_PARENTHESIS);
+        Match(TokenType.SEMICOLON);
+    }
+
+    private void ParseIdentifierStatement()
+    {
+        Match(TokenType.IDENTIFIER);
+
+        // Проверяем, является ли это присваиванием или вызовом функции
+        if (_tokens.Peek().Type == TokenType.ASSIGN ||
+            _tokens.Peek().Type == TokenType.PLUS_ASSIGN ||
+            _tokens.Peek().Type == TokenType.MINUS_ASSIGN ||
+            _tokens.Peek().Type == TokenType.MULTIPLY_ASSIGN ||
+            _tokens.Peek().Type == TokenType.DIVIDE_ASSIGN ||
+            _tokens.Peek().Type == TokenType.EXPONENTIATION_ASSIGN)
+        {
+            // Это присваивание
+            _tokens.Advance();
+            ParseExpression();
+            Match(TokenType.SEMICOLON);
+        }
+        else if (_tokens.Peek().Type == TokenType.OPEN_PARENTHESIS)
+        {
+            // Это вызов функции
+            ParseFunctionCallArguments();
+            Match(TokenType.SEMICOLON);
+        }
+        else
+        {
+            throw new UnexpectedLexemeException(TokenType.ASSIGN, _tokens.Peek());
+        }
     }
 
     private void ParseAssignmentExpression()
