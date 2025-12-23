@@ -2,12 +2,18 @@ using StarLightLexer;
 
 namespace StarLightParser;
 
-public class Parser(string code, Dictionary<string, decimal>? initialVars = null)
+public class Parser(
+    string code,
+    Dictionary<string, decimal>? initialVars = null,
+    Func<decimal>? inputProvider = null,
+    Action<decimal>? outputConsumer = null)
 {
     private readonly string _code = code;
     private readonly List<decimal> _results = new();
     private readonly HashSet<string> _declaredVariables = new();
     private readonly HashSet<string> _constants = new();
+    private readonly Func<decimal>? _inputProvider = inputProvider;
+    private readonly Action<decimal>? _outputConsumer = outputConsumer;
     private TokenStream _tokens = null!;
 
     public Dictionary<string, decimal> Variables { get; } = initialVars ?? new Dictionary<string, decimal>();
@@ -157,6 +163,7 @@ public class Parser(string code, Dictionary<string, decimal>? initialVars = null
         {
             decimal value = EvaluateAssignmentExpression();
             _results.Add(value);
+            _outputConsumer?.Invoke(value);
 
             // Парсим дополнительные аргументы через запятую
             while (_tokens.Peek().Type == TokenType.COMMA)
@@ -164,6 +171,7 @@ public class Parser(string code, Dictionary<string, decimal>? initialVars = null
                 _tokens.Advance();
                 value = EvaluateAssignmentExpression();
                 _results.Add(value);
+                _outputConsumer?.Invoke(value);
             }
         }
 
@@ -185,11 +193,21 @@ public class Parser(string code, Dictionary<string, decimal>? initialVars = null
             throw new InvalidOperationException($"Переменная '{variableName}' не объявлена");
         }
 
-        // В парсере просто считываем 0 (в реальном интерпретаторе было бы чтение из ввода)
-        // Для тестов можно использовать начальные значения
-        if (!Variables.ContainsKey(variableName))
+        // В библиотеке парсера чтение делегируется внешнему интерпретатору.
+        // Если обработчик ввода не передан, сохраняем прежнее поведение:
+        // не изменяем значение уже существующей переменной и
+        // инициализируем неинициализированную переменную нулём.
+        if (_inputProvider is null)
         {
-            Variables[variableName] = 0;
+            if (!Variables.ContainsKey(variableName))
+            {
+                Variables[variableName] = 0;
+            }
+        }
+        else
+        {
+            decimal value = _inputProvider();
+            Variables[variableName] = value;
         }
 
         Match(TokenType.CLOSE_PARENTHESIS);
